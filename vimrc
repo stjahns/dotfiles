@@ -21,6 +21,7 @@ Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'guns/vim-sexp'
 Plugin 'stephpy/vim-yaml'
 Plugin 'flazz/vim-colorschemes'
+Plugin 'scrooloose/nerdcommenter'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -42,7 +43,7 @@ endif
 
 " Color scheme
 
-colorscheme sonofobsidian
+colorscheme candycode
 syntax enable
 
 " Set leader to space
@@ -79,7 +80,7 @@ au Syntax * RainbowParenthesesLoadBraces
 " Unite bindings
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
-nnoremap <leader>pf :Unite file_rec/async -start-insert <cr>
+nnoremap <leader>pf :Unite file_rec -start-insert <cr>
 nnoremap <leader>ff :Unite file -start-insert <cr>
 nnoremap <leader>fr :Unite file_mru -start-insert <cr>
 nnoremap <leader>bb :Unite buffer -start-insert <cr>
@@ -104,3 +105,9 @@ nnoremap <leader>rr :Eval (ripple.repl/rra)<cr>
 
 " Toggle line numbers
 nnoremap <leader>tn :set invnumber<CR>
+
+" Make backspace work 'normally'
+set backspace=2
+
+" Case-insensitive search
+set ignorecase
