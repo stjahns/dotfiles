@@ -10,9 +10,9 @@
  ;; Paths must have a trailing slash (ie. `~/.mycontribs/')
  dotspacemacs-configuration-layer-path '()
  ;; List of configuration layers to load.
- dotspacemacs-configuration-layers '(themes-megapack)
+ dotspacemacs-configuration-layers '(git themes-megapack)
  ;; A list of packages and/or extensions that will not be install and loaded.
- dotspacemacs-excluded-packages '()
+ dotspacemacs-excluded-packages '(evil-surround)
 )
 
 ;; Settings
@@ -20,7 +20,7 @@
 
 (setq-default
  ;; Default theme applied at startup
- dotspacemacs-default-theme 'solarized-dark
+ dotspacemacs-default-theme 'zenburn
  ;; The leader key
  dotspacemacs-leader-key "SPC"
  ;; Guide-key delay in seconds. The Guide-key is the popup buffer listing
@@ -63,6 +63,9 @@
 
   (spacemacs/load-or-install-package 'company)
   (spacemacs/load-or-install-package 'rainbow-mode)
+  (spacemacs/load-or-install-package 'rust-mode)
+  (spacemacs/load-or-install-package 'flycheck-rust)
+  (spacemacs/load-or-install-package 'toml-mode)
   (spacemacs/load-or-install-package 'yaml-mode))
 
 (defun dotspacemacs/do-tmux (cmd name)
@@ -97,6 +100,13 @@
                       branch)))
     (browse-url url)))
 
+
+(defun dotspacemacs/ripple-restart ()
+  (interactive)
+  (nrepl-sync-request:eval "(rra)\n"))
+
+
+
 (defun dotspacemacs/config-clojure ()
   (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
   (add-hook 'cider-repl-mode-hook 'company-mode)
@@ -105,6 +115,8 @@
 
   (evil-leader/set-key "cji" 'cider-jack-in)
   (evil-leader/set-key "sp" 'paredit-splice-sexp)
+
+  (evil-leader/set-key "rr" 'dotspacemacs/ripple-restart)
   )
 
 (defadvice rspec-compile (around rspec-compile-around)
@@ -150,7 +162,15 @@ This function is called at the very end of Spacemacs initialization."
   (global-set-key (kbd "M-{") 'escreen-goto-prev-screen)
   (global-set-key (kbd "M-}") 'escreen-goto-next-screen)
 
-  (escreen-create-screen)
+  (require 'paredit)
+  (global-set-key (kbd "M-F") 'paredit-forward)
+  (global-set-key (kbd "M-B") 'paredit-backward)
+  (global-set-key (kbd "M-D") 'paredit-forward-down)
+  (global-set-key (kbd "M-U") 'paredit-backward-up)
+  (global-set-key (kbd "M-P") 'paredit-backward-down)
+  (global-set-key (kbd "M-N") 'paredit-forward-up)
+
+  (ESCREEN-create-screen)
 
   (winner-mode 1)
   (global-set-key (kbd "C--") 'winner-undo)
@@ -169,16 +189,20 @@ This function is called at the very end of Spacemacs initialization."
   (defadvice auto-complete-mode (around disable-auto-complete-for-csharp)
     (unless (eq major-mode 'csharp-mode) ad-do-it))
 
+  (defadvice auto-complete-mode (around disable-auto-complete-for-clojure)
+    (unless (eq major-mode 'clojure-mode) ad-do-it))
+
   (ad-activate 'auto-complete-mode)
 
+  (eval-after-load 'flycheck '(add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
-  (load-theme 'zenburn)
-  (load-theme 'base16-chalk)
+  ;;(load-theme 'zenburn)
+  ;(load-theme 'base16-chalk)
 
-  (custom-theme-set-faces
-   'base16-chalk
-   '(highlight ((t (:background "black"))))
-   '(cursor ((t (:background "gray")))))
+  ;; (custom-theme-set-faces
+  ;;  'base16-chalk
+  ;;  '(highlight ((t (:background "black"))))
+  ;;  '(cursor ((t (:background "gray10")))))
 
 )
 
@@ -200,11 +224,17 @@ This function is called at the very end of Spacemacs initialization."
  '(ahs-idle-interval 0.25)
  '(ahs-idle-timer 0 t)
  '(ahs-inhibit-face-list nil)
- '(company-idle-delay 0)
+ '(company-idle-delay 0.5)
  '(company-minimum-prefix-length 2)
  '(css-indent-offset 2)
- '(custom-safe-themes (quote ("9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "c0dd5017b9f1928f1f337110c2da10a20f76da0a5b14bb1fec0f243c4eb224d4" "9bac44c2b4dfbb723906b8c491ec06801feb57aa60448d047dbfdbd1a8650897" default)))
- '(flycheck-checkers (quote (ledger ada-gnat asciidoc c/c++-clang c/c++-gcc c/c++-cppcheck cfengine chef-foodcritic coffee coffee-coffeelint coq css-csslint d-dmd elixir emacs-lisp emacs-lisp-checkdoc erlang eruby-erubis fortran-gfortran go-gofmt go-golint go-vet go-build go-test go-errcheck haml handlebars haskell-ghc haskell-hlint html-tidy javascript-jshint javascript-eslint javascript-gjslint json-jsonlint less lua make perl perl-perlcritic php php-phpmd php-phpcs puppet-parser puppet-lint python-flake8 python-pylint racket rpm-rpmlint rst rst-sphinx ruby-rubocop rust sass scala scala-scalastyle scss sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck slim tex-chktex tex-lacheck texinfo verilog-verilator xml-xmlstarlet xml-xmllint yaml-jsyaml yaml-ruby)))
+ '(custom-safe-themes
+   (quote
+    ("9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "c0dd5017b9f1928f1f337110c2da10a20f76da0a5b14bb1fec0f243c4eb224d4" "9bac44c2b4dfbb723906b8c491ec06801feb57aa60448d047dbfdbd1a8650897" default)))
+ '(expand-region-contract-fast-key "V")
+ '(expand-region-reset-fast-key "r")
+ '(flycheck-checkers
+   (quote
+    (ledger ada-gnat asciidoc c/c++-clang c/c++-gcc c/c++-cppcheck cfengine chef-foodcritic coffee coffee-coffeelint coq css-csslint d-dmd elixir emacs-lisp emacs-lisp-checkdoc erlang eruby-erubis fortran-gfortran go-gofmt go-golint go-vet go-build go-test go-errcheck haml handlebars haskell-ghc haskell-hlint html-tidy javascript-jshint javascript-eslint javascript-gjslint json-jsonlint less lua make perl perl-perlcritic php php-phpmd php-phpcs puppet-parser puppet-lint python-flake8 python-pylint racket rpm-rpmlint rst rst-sphinx ruby-rubocop rust sass scala scala-scalastyle scss sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck slim tex-chktex tex-lacheck texinfo verilog-verilator xml-xmlstarlet xml-xmllint yaml-jsyaml yaml-ruby)))
  '(global-evil-surround-mode nil)
  '(js-indent-level 2)
  '(magit-use-overlays nil)
@@ -223,4 +253,4 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(highlight ((t nil))))
+ '(highlight ((t (:background "dim gray")))))
