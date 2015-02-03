@@ -6,7 +6,7 @@ filetype off
 
 " Setup packages
 
-set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/vimfiles/bundle/Vundle.vim
 call vundle#begin()	     " required
 
 Plugin 'gmarik/Vundle.vim'
@@ -20,13 +20,30 @@ Plugin 'vim-scripts/candycode.vim'
 Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'guns/vim-sexp'
 Plugin 'stephpy/vim-yaml'
+Plugin 'flazz/vim-colorschemes'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
 
-" Set meta key to option/alt on mac
+" Platform-specific setup
 
-set macmeta
+if has("gui_running")
+  if has("gui_gtk2")
+    set guifont=Inconsolata\ 12
+  elseif has("gui_macvim")
+    set guifont=Menlo\ Regular:h14
+    set macmeta
+  elseif has("gui_win32")
+    set guifont=Consolas:h12:cANSI
+    set guioptions-=m
+    set guioptions-=T
+  endif
+endif
+
+" Color scheme
+
+colorscheme sonofobsidian
+syntax enable
 
 " Set leader to space
 
@@ -87,4 +104,3 @@ nnoremap <leader>rr :Eval (ripple.repl/rra)<cr>
 
 " Toggle line numbers
 nnoremap <leader>tn :set invnumber<CR>
-
