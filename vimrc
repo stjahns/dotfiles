@@ -9,7 +9,16 @@ set confirm " Confirmation dialog when leaving unsaved buffer
 
 " Setup packages
 
-set rtp+=~/vimfiles/bundle/Vundle.vim
+if has("gui_running")
+  if has("gui_win32")
+    set rtp+=~/vimfiles/bundle/Vundle.vim
+  else
+    set rtp+=~/.vim/bundle/Vundle.vim
+  endif
+else
+  set rtp+=~/.vim/bundle/Vundle.vim
+endif
+
 call vundle#begin()	     " required
 
 Plugin 'gmarik/Vundle.vim'
@@ -27,6 +36,12 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'avakhov/vim-yaml'
 Plugin 'bling/vim-airline'
 Plugin 'Lokaltog/vim-easymotion'
+Plugin 'cespare/vim-toml'
+Plugin 'wting/rust.vim'
+Plugin 'phildawes/racer'
+Plugin 'scrooloose/syntastic'
+Plugin 'airblade/vim-rooter'
+Plugin 'bronson/vim-trailing-whitespace'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -37,7 +52,7 @@ if has("gui_running")
   if has("gui_gtk2")
     set guifont=Inconsolata\ 12
   elseif has("gui_macvim")
-    set guifont=Menlo\ Regular:h14
+    set guifont=Menlo\ Regular:h11
     set macmeta
   elseif has("gui_win32")
     set guifont=Consolas:h12:cANSI
@@ -89,7 +104,9 @@ nnoremap <leader>pf :Unite file_rec -start-insert <cr>
 nnoremap <leader>ff :Unite file -start-insert <cr>
 nnoremap <leader>fr :Unite file_mru -start-insert <cr>
 nnoremap <leader>bb :Unite buffer -start-insert <cr>
-nnoremap <leader>/ :Unite grep:. <cr>
+
+nnoremap <leader>// :Unite grep:. <cr>
+nnoremap <leader>/p :UniteWithCursorWord grep:. <cr>
 
 " Use ag for search
 if executable('ag')
@@ -138,3 +155,11 @@ nnoremap <M-w> :tabclose<cr>
 
 " EasyMotion
 nmap s <Plug>(easymotion-s)
+
+" Rust
+let g:racer_cmd = "/Users/jahns/.vim/bundle/racer/target/release/racer"
+let $RUST_SRC_PATH="~/rust/src/"
+
+nnoremap <leader>cr :!cargo run<CR>
+nnoremap <leader>ct :!cargo test<CR>
+nnoremap <leader>cm :!cargo build<CR>

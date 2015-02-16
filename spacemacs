@@ -170,7 +170,7 @@ This function is called at the very end of Spacemacs initialization."
   (global-set-key (kbd "M-P") 'paredit-backward-down)
   (global-set-key (kbd "M-N") 'paredit-forward-up)
 
-  (ESCREEN-create-screen)
+  (escreen-create-screen)
 
   (winner-mode 1)
   (global-set-key (kbd "C--") 'winner-undo)
@@ -203,6 +203,9 @@ This function is called at the very end of Spacemacs initialization."
   ;;  'base16-chalk
   ;;  '(highlight ((t (:background "black"))))
   ;;  '(cursor ((t (:background "gray10")))))
+
+  (add-to-list 'load-path "/Users/jahns/src/racer/editors")
+  (eval-after-load "rust-mode" '(require 'racer))
 
 )
 
@@ -239,6 +242,8 @@ This function is called at the very end of Spacemacs initialization."
  '(js-indent-level 2)
  '(magit-use-overlays nil)
  '(omnisharp-company-template-use-yasnippet nil)
+ '(racer-cmd "/Users/jahns/src/racer/target/release/racer")
+ '(racer-rust-src-path "/Users/jahns/rust/src")
  '(ring-bell-function (quote ignore) t)
  '(rspec-use-rake-when-possible nil)
  '(rspec-use-rvm t)
@@ -253,4 +258,5 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:foreground "#DCDCCC" :background "#3F3F3F"))))
  '(highlight ((t (:background "dim gray")))))
