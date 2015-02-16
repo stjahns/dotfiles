@@ -4,6 +4,9 @@ set guioptions-=L
 set noswapfile
 filetype off
 
+"set hidden " Switch buffers without needing to save
+set confirm " Confirmation dialog when leaving unsaved buffer
+
 " Setup packages
 
 set rtp+=~/vimfiles/bundle/Vundle.vim
@@ -19,9 +22,11 @@ Plugin 'Shougo/vimproc.vim'
 Plugin 'vim-scripts/candycode.vim'
 Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'guns/vim-sexp'
-Plugin 'stephpy/vim-yaml'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'scrooloose/nerdcommenter'
+Plugin 'avakhov/vim-yaml'
+Plugin 'bling/vim-airline'
+Plugin 'Lokaltog/vim-easymotion'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -43,7 +48,7 @@ endif
 
 " Color scheme
 
-colorscheme candycode
+colorscheme desert
 syntax enable
 
 " Set leader to space
@@ -95,6 +100,7 @@ endif
 
 " Fugitive bindings
 nnoremap <leader>gs :Gstatus<cr>
+nnoremap <leader>gd :Gdiff<cr>
 
 " Fireplace bindings
 vnoremap <leader>er :Eval <cr>
@@ -111,3 +117,24 @@ set backspace=2
 
 " Case-insensitive search
 set ignorecase
+
+":[range]Execute    Execute text lines as ex commands.
+"           Handles |line-continuation|.
+command! -bar -range Execute silent <line1>,<line2>yank z | let @z = substitute(@z, '\n\s*\\', '', 'g') | @z
+
+set iskeyword-=-
+
+" Emacs-style window closing
+nnoremap 0 c
+nnoremap 1 o
+
+nnoremap <leader>1 1
+nnoremap <leader>2 2
+
+nnoremap <M-{> :tabp<cr>
+nnoremap <M-}> :tabn<cr>
+nnoremap <M-t> :tabnew<cr>
+nnoremap <M-w> :tabclose<cr>
+
+" EasyMotion
+nmap s <Plug>(easymotion-s)
